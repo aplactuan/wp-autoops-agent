@@ -118,6 +118,7 @@ class Plugin {
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-status-service.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/actions/interface-action.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/actions/class-ping-action.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/actions/class-update-plugins-action.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-action-service.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-job-service.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-api.php';
@@ -143,7 +144,8 @@ class Plugin {
 		);
 		$action_service = new Action_Service(
 			array(
-				'ping' => new Actions\Ping_Action(),
+				'ping'           => new Actions\Ping_Action(),
+				'update_plugins' => new Actions\Update_Plugins_Action(),
 			)
 		);
 		$this->api      = new API( $auth, $status_service, $action_service );

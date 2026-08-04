@@ -95,10 +95,13 @@ class Action_Service {
 				);
 			}
 
-			$options = array();
+			$options = $item;
+			unset( $options['type'] );
 
-			if ( isset( $item['options'] ) && is_array( $item['options'] ) ) {
-				$options = $item['options'];
+			if ( isset( $options['options'] ) && is_array( $options['options'] ) ) {
+				$nested_options = $options['options'];
+				unset( $options['options'] );
+				$options = array_merge( $nested_options, $options );
 			}
 
 			$normalized[] = array(
