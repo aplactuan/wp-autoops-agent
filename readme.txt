@@ -4,7 +4,7 @@ Tags: monitoring, maintenance, remote management, autoops
 Requires at least: 6.5
 Tested up to: 6.8
 Requires PHP: 8.1
-Stable tag: 1.0.0
+Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -26,7 +26,7 @@ This release contains the plugin bootstrap only: environment checks, core classe
 
 = What does this version do? =
 
-It bootstraps the plugin, validates PHP and WordPress requirements on activation, and loads the core class structure. No REST API or settings UI is included yet.
+It provides authenticated ping and site status endpoints for WP AutoOps. No settings UI is included yet.
 
 = What are the minimum requirements? =
 
@@ -34,12 +34,13 @@ PHP 8.1 or higher and WordPress 6.5 or higher.
 
 == Changelog ==
 
-= 1.0.0 =
+= 0.1.0 =
 * Initial plugin bootstrap.
 * Activation checks for PHP 8.1+ and WordPress 6.5+.
 * Core loader, plugin, API, auth, response, status, and job service scaffolds.
+* Authenticated ping and provider-based status endpoints.
 
 == Upgrade Notice ==
 
-= 1.0.0 =
+= 0.1.0 =
 Initial release of the WP AutoOps Agent bootstrap.

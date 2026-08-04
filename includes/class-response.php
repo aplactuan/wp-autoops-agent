@@ -21,25 +21,21 @@ class Response {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param mixed                $data    Response data.
-	 * @param string               $message Optional human-readable message.
-	 * @param int                  $status  HTTP status code.
-	 * @param array<string, mixed> $meta    Optional response metadata.
+	 * @param mixed                $data   Response data.
+	 * @param array<string, mixed> $meta   Optional response metadata.
+	 * @param int                  $status HTTP status code.
 	 * @return \WP_REST_Response
 	 */
 	public static function success(
 		mixed $data = null,
-		string $message = '',
-		int $status = 200,
-		array $meta = array()
+		array $meta = array(),
+		int $status = 200
 	): \WP_REST_Response {
 		return new \WP_REST_Response(
 			array(
 				'success' => true,
-				'message' => $message,
-				'data'    => $data,
-				'error'   => null,
 				'meta'    => $meta,
+				'data'    => $data,
 			),
 			$status
 		);
@@ -67,13 +63,13 @@ class Response {
 		return new \WP_REST_Response(
 			array(
 				'success' => false,
-				'message' => $message,
+				'meta'    => $meta,
 				'data'    => null,
 				'error'   => array(
 					'code'    => $code,
+					'message' => $message,
 					'details' => $details,
 				),
-				'meta'    => $meta,
 			),
 			$status
 		);
