@@ -7,25 +7,51 @@
 
 namespace WP_AutoOps_Agent;
 
+use WP_AutoOps_Agent\Status\Provider;
+
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Collects site health and status data for remote monitoring.
+ * Aggregates status provider data for remote monitoring.
  *
- * Intentionally empty in the bootstrap phase.
- *
- * @since 1.0.0
+ * @since 0.1.0
  */
 class Status_Service {
 
 	/**
+	 * Status providers.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array<int, Provider>
+	 */
+	private array $providers;
+
+	/**
+	 * Constructor.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param Provider ...$providers Status data providers.
+	 */
+	public function __construct( Provider ...$providers ) {
+		$this->providers = $providers;
+	}
+
+	/**
 	 * Returns the current site status snapshot.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
-	 * @return array<string, mixed> Empty array until status collectors are implemented.
+	 * @return array<string, mixed>
 	 */
 	public function get_status(): array {
-		return array();
+		$status = array();
+
+		foreach ( $this->providers as $provider ) {
+			$status[ $provider->get_key() ] = $provider->get_data();
+		}
+
+		return $status;
 	}
 }

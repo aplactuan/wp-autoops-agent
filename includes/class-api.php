@@ -88,6 +88,16 @@ class API {
 				'permission_callback' => array( $this->auth, 'permissions_check' ),
 			)
 		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/status',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_status' ),
+				'permission_callback' => array( $this->auth, 'permissions_check' ),
+			)
+		);
 	}
 
 	/**
@@ -107,6 +117,26 @@ class API {
 				'wordpress_version' => get_bloginfo( 'version' ),
 				'php_version'       => PHP_VERSION,
 				'timestamp'         => current_time( 'c', true ),
+			)
+		);
+	}
+
+	/**
+	 * Handles the status endpoint.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param \WP_REST_Request $request Current REST request.
+	 * @return \WP_REST_Response
+	 */
+	public function get_status( \WP_REST_Request $request ): \WP_REST_Response {
+		unset( $request );
+
+		return Response::success(
+			$this->status_service->get_status(),
+			array(
+				'agent_version' => WP_AUTOOPS_AGENT_VERSION,
+				'generated_at'  => gmdate( 'Y-m-d\TH:i:s\Z' ),
 			)
 		);
 	}

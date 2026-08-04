@@ -3,7 +3,7 @@
  * Plugin Name:       WP AutoOps Agent
  * Plugin URI:        https://github.com/aplactuan/wp-autoops-agent
  * Description:       Remote monitoring and maintenance agent for WP AutoOps.
- * Version:           1.0.0
+ * Version:           0.1.0
  * Requires at least: 6.5
  * Requires PHP:      8.1
  * Author:            Adrian Lactuan
@@ -20,7 +20,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Current plugin version.
  */
-define( 'WP_AUTOOPS_AGENT_VERSION', '1.0.0' );
+define( 'WP_AUTOOPS_AGENT_VERSION', '0.1.0' );
 
 /**
  * Absolute path to the plugin directory, with trailing slash.

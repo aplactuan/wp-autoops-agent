@@ -109,6 +109,12 @@ class Plugin {
 	private function load_dependencies(): void {
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-response.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-auth.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/interface-provider.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-site-provider.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-wordpress-provider.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-php-provider.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-theme-provider.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-plugin-provider.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-status-service.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-job-service.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-api.php';
@@ -125,7 +131,13 @@ class Plugin {
 	 */
 	private function define_hooks(): void {
 		$auth           = new Auth();
-		$status_service = new Status_Service();
+		$status_service = new Status_Service(
+			new Status\Site_Provider(),
+			new Status\WordPress_Provider(),
+			new Status\PHP_Provider(),
+			new Status\Theme_Provider(),
+			new Status\Plugin_Provider()
+		);
 		$job_service    = new Job_Service();
 		$this->api      = new API( $auth, $status_service, $job_service );
 
