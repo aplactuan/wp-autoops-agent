@@ -35,6 +35,15 @@ class Plugin {
 	protected Loader $loader;
 
 	/**
+	 * REST API controller.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var API
+	 */
+	protected API $api;
+
+	/**
 	 * Whether the plugin has been run.
 	 *
 	 * @since 1.0.0
@@ -115,7 +124,13 @@ class Plugin {
 	 * @return void
 	 */
 	private function define_hooks(): void {
+		$auth           = new Auth();
+		$status_service = new Status_Service();
+		$job_service    = new Job_Service();
+		$this->api      = new API( $auth, $status_service, $job_service );
+
 		$this->loader->add_action( 'init', $this, 'load_textdomain' );
+		$this->loader->add_action( 'rest_api_init', $this->api, 'register_routes' );
 	}
 
 	/**

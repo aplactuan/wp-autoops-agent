@@ -1,6 +1,6 @@
 <?php
 /**
- * REST API registration scaffold.
+ * REST API controller.
  *
  * @package WP_AutoOps_Agent
  */
@@ -10,9 +10,7 @@ namespace WP_AutoOps_Agent;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Coordinates future REST route registration.
- *
- * Intentionally empty in the bootstrap phase — no endpoints are registered yet.
+ * Owns REST route registration, permission callbacks, and handlers.
  *
  * @since 1.0.0
  */
@@ -25,7 +23,7 @@ class API {
 	 *
 	 * @var string
 	 */
-	public const NAMESPACE = 'wp-autoops-agent/v1';
+	public const NAMESPACE = 'wp-autoops/v1';
 
 	/**
 	 * Authentication helper.
@@ -76,13 +74,40 @@ class API {
 	/**
 	 * Registers REST API routes.
 	 *
-	 * Reserved for future endpoint registration.
-	 *
 	 * @since 1.0.0
 	 *
 	 * @return void
 	 */
 	public function register_routes(): void {
-		// No routes in the bootstrap phase.
+		register_rest_route(
+			self::NAMESPACE,
+			'/ping',
+			array(
+				'methods'             => \WP_REST_Server::READABLE,
+				'callback'            => array( $this, 'get_ping' ),
+				'permission_callback' => array( $this->auth, 'permissions_check' ),
+			)
+		);
+	}
+
+	/**
+	 * Handles the ping endpoint.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param \WP_REST_Request $request Current REST request.
+	 * @return \WP_REST_Response
+	 */
+	public function get_ping( \WP_REST_Request $request ): \WP_REST_Response {
+		unset( $request );
+
+		return Response::success(
+			array(
+				'plugin_version'    => WP_AUTOOPS_AGENT_VERSION,
+				'wordpress_version' => get_bloginfo( 'version' ),
+				'php_version'       => PHP_VERSION,
+				'timestamp'         => current_time( 'c', true ),
+			)
+		);
 	}
 }

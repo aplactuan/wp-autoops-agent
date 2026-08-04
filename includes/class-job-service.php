@@ -36,14 +36,15 @@ class Job_Service {
 	 *
 	 * @param string               $job_id Job identifier.
 	 * @param array<string, mixed> $args   Optional job arguments.
-	 * @return array{success: false, message: string, code: string, data: null, meta: array<string, mixed>}
+	 * @return \WP_REST_Response
 	 */
-	public function run_job( string $job_id, array $args = array() ): array {
+	public function run_job( string $job_id, array $args = array() ): \WP_REST_Response {
 		unset( $job_id, $args );
 
 		return Response::error(
+			'not_implemented',
 			__( 'Job execution is not implemented yet.', 'wp-autoops-agent' ),
-			'not_implemented'
+			501
 		);
 	}
 }
