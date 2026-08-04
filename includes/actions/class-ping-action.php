@@ -22,13 +22,15 @@ class Ping_Action implements Action_Interface {
 	 * @since 0.1.0
 	 *
 	 * @param array<string, mixed> $options Optional action options.
-	 * @return array{message: string}
+	 * @return array{result: array{message: string}}
 	 */
 	public function execute( array $options = array() ): array {
 		unset( $options );
 
 		return array(
-			'message' => 'Action framework operational.',
+			'result' => array(
+				'message' => 'Action framework operational.',
+			),
 		);
 	}
 }

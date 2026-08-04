@@ -25,10 +25,12 @@ class Update_Plugins_Action implements Action_Interface {
 	 *
 	 * @param array<string, mixed> $options Action options. Expects a `plugins` list.
 	 * @return array{
-	 *     updated: int,
-	 *     failed: int,
-	 *     skipped: int,
-	 *     plugins: array<int, array<string, mixed>>
+	 *     result: array{
+	 *         updated: int,
+	 *         failed: int,
+	 *         skipped: int,
+	 *         plugins: array<int, array<string, mixed>>
+	 *     }
 	 * }
 	 */
 	public function execute( array $options = array() ): array {
@@ -67,10 +69,12 @@ class Update_Plugins_Action implements Action_Interface {
 		wp_clean_plugins_cache( true );
 
 		return array(
-			'updated' => $updated,
-			'failed'  => $failed,
-			'skipped' => $skipped,
-			'plugins' => $results,
+			'result' => array(
+				'updated' => $updated,
+				'failed'  => $failed,
+				'skipped' => $skipped,
+				'plugins' => $results,
+			),
 		);
 	}
 
