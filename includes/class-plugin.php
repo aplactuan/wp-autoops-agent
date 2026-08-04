@@ -116,6 +116,9 @@ class Plugin {
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-theme-provider.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-plugin-provider.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-status-service.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/actions/interface-action.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/actions/class-ping-action.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-action-service.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-job-service.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-api.php';
 	}
@@ -138,8 +141,12 @@ class Plugin {
 			new Status\Theme_Provider(),
 			new Status\Plugin_Provider()
 		);
-		$job_service    = new Job_Service();
-		$this->api      = new API( $auth, $status_service, $job_service );
+		$action_service = new Action_Service(
+			array(
+				'ping' => new Actions\Ping_Action(),
+			)
+		);
+		$this->api      = new API( $auth, $status_service, $action_service );
 
 		$this->loader->add_action( 'init', $this, 'load_textdomain' );
 		$this->loader->add_action( 'rest_api_init', $this->api, 'register_routes' );
