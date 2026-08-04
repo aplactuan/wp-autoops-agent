@@ -10,7 +10,7 @@ namespace WP_AutoOps_Agent;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Owns REST route registration, permission callbacks, and handlers.
+ * Owns REST route registration and request handlers.
  *
  * @since 1.0.0
  */
@@ -44,13 +44,13 @@ class API {
 	protected Status_Service $status_service;
 
 	/**
-	 * Job service.
+	 * Action service.
 	 *
-	 * @since 1.0.0
+	 * @since 0.1.0
 	 *
-	 * @var Job_Service
+	 * @var Action_Service
 	 */
-	protected Job_Service $job_service;
+	protected Action_Service $action_service;
 
 	/**
 	 * Constructor.
@@ -59,16 +59,16 @@ class API {
 	 *
 	 * @param Auth           $auth            Authentication helper.
 	 * @param Status_Service $status_service  Status service.
-	 * @param Job_Service    $job_service     Job service.
+	 * @param Action_Service $action_service  Action service.
 	 */
 	public function __construct(
 		Auth $auth,
 		Status_Service $status_service,
-		Job_Service $job_service
+		Action_Service $action_service
 	) {
 		$this->auth           = $auth;
 		$this->status_service = $status_service;
-		$this->job_service    = $job_service;
+		$this->action_service = $action_service;
 	}
 
 	/**
@@ -96,6 +96,22 @@ class API {
 				'methods'             => \WP_REST_Server::READABLE,
 				'callback'            => array( $this, 'get_status' ),
 				'permission_callback' => array( $this->auth, 'permissions_check' ),
+			)
+		);
+
+		register_rest_route(
+			self::NAMESPACE,
+			'/actions',
+			array(
+				'methods'             => \WP_REST_Server::CREATABLE,
+				'callback'            => array( $this, 'post_actions' ),
+				'permission_callback' => array( $this->auth, 'permissions_check' ),
+				'args'                => array(
+					'actions' => array(
+						'required' => true,
+						'type'     => 'array',
+					),
+				),
 			)
 		);
 	}
@@ -139,5 +155,27 @@ class API {
 				'generated_at'  => gmdate( 'Y-m-d\TH:i:s\Z' ),
 			)
 		);
+	}
+
+	/**
+	 * Handles the actions endpoint.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param \WP_REST_Request $request Current REST request.
+	 * @return \WP_REST_Response
+	 */
+	public function post_actions( \WP_REST_Request $request ): \WP_REST_Response {
+		$actions = $request->get_param( 'actions' );
+
+		if ( ! is_array( $actions ) ) {
+			return Response::error(
+				'invalid_actions',
+				__( 'The actions parameter must be an array.', 'wp-autoops-agent' ),
+				400
+			);
+		}
+
+		return $this->action_service->execute( $actions );
 	}
 }
