@@ -115,6 +115,7 @@ class Plugin {
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-php-provider.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-theme-provider.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-plugin-provider.php';
+		require_once WP_AUTOOPS_AGENT_PATH . 'includes/status/class-backup-provider.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/class-status-service.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/actions/interface-action.php';
 		require_once WP_AUTOOPS_AGENT_PATH . 'includes/actions/class-ping-action.php';
@@ -143,7 +144,8 @@ class Plugin {
 			new Status\WordPress_Provider(),
 			new Status\PHP_Provider(),
 			new Status\Theme_Provider(),
-			new Status\Plugin_Provider()
+			new Status\Plugin_Provider(),
+			new Status\Backup_Provider()
 		);
 		$action_service = new Action_Service(
 			array(
