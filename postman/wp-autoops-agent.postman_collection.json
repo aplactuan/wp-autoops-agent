@@ -193,7 +193,7 @@
 								"actions"
 							]
 						},
-						"description": "Action type: update_theme\n\nUpdates the currently active theme. No theme name is required."
+						"description": "Action type: update_theme\n\nUpdates every installed theme that has an available update via Theme_Upgrader.\nContinues on individual failures and returns per-theme results."
 					},
 					"response": []
 				},
