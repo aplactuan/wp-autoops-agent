@@ -10,7 +10,7 @@ namespace WP_AutoOps_Agent\Actions;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Starts a full site backup through UpdraftPlus.
+ * Starts a scoped UpdraftPlus backup (database + plugins + themes).
  *
  * Backups are queued asynchronously so the REST request remains responsive.
  *
@@ -28,7 +28,18 @@ class Backup_Action implements Action_Interface {
 	private const UPDRAFTPLUS_BASENAME = 'updraftplus/updraftplus.php';
 
 	/**
-	 * Queues a full UpdraftPlus backup.
+	 * File entities included in every backup.
+	 *
+	 * Database is always included via updraft_backupnow_backup_all.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @var array<int, string>
+	 */
+	private const FILE_ENTITIES = array( 'plugins', 'themes' );
+
+	/**
+	 * Queues a database + plugins + themes UpdraftPlus backup.
 	 *
 	 * @since 0.1.0
 	 *
@@ -48,7 +59,8 @@ class Backup_Action implements Action_Interface {
 			}
 
 			$backup_options = array(
-				'nocloud' => ! empty( $options['nocloud'] ) ? 1 : 0,
+				'nocloud'                    => ! empty( $options['nocloud'] ) ? 1 : 0,
+				'restrict_files_to_override' => self::FILE_ENTITIES,
 			);
 
 			if ( ! empty( $options['label'] ) && is_string( $options['label'] ) ) {
@@ -63,7 +75,7 @@ class Backup_Action implements Action_Interface {
 						'provider' => 'updraftplus',
 						'started'  => true,
 						'queued'   => true,
-						'scope'    => 'all',
+						'scope'    => array( 'database', 'plugins', 'themes' ),
 						'message'  => __( 'An UpdraftPlus backup is already queued.', 'wp-autoops-agent' ),
 					),
 				);
@@ -88,7 +100,7 @@ class Backup_Action implements Action_Interface {
 					'provider' => 'updraftplus',
 					'started'  => true,
 					'queued'   => true,
-					'scope'    => 'all',
+					'scope'    => array( 'database', 'plugins', 'themes' ),
 					'nocloud'  => (bool) $backup_options['nocloud'],
 					'message'  => __( 'UpdraftPlus backup has been queued.', 'wp-autoops-agent' ),
 				),
