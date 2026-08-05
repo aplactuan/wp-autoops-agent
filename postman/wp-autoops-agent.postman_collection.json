@@ -261,7 +261,7 @@
 								"actions"
 							]
 						},
-						"description": "Action type: backup\n\nQueues a full UpdraftPlus backup (files + database).\nRequires UpdraftPlus to be installed and active."
+						"description": "Action type: backup\n\nQueues an UpdraftPlus backup of database + plugins + themes only (uploads/others excluded).\nRequires UpdraftPlus to be installed and active."
 					},
 					"response": []
 				},
@@ -295,7 +295,7 @@
 								"actions"
 							]
 						},
-						"description": "Action type: backup with optional fields.\n\n- nocloud: skip remote storage upload\n- label: UpdraftPlus backup label"
+						"description": "Action type: backup with optional fields.\n\nAlways backs up database + plugins + themes only.\n- nocloud: skip remote storage upload\n- label: UpdraftPlus backup label"
 					},
 					"response": []
 				},
