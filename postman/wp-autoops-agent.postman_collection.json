@@ -86,7 +86,7 @@
 								"status"
 							]
 						},
-						"description": "Aggregated site status from providers: site, wordpress, php, theme, plugins."
+						"description": "Aggregated site status from providers: site, wordpress, php, theme, plugins, backup.\n\nBackup (UpdraftPlus):\n- in_progress: true while a backup is queued or running\n- last.success / last.backup_time: outcome of the most recent completed backup\nWait until in_progress is false and last.success is true before update_plugins."
 					},
 					"response": []
 				}
