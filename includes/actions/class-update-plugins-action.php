@@ -10,16 +10,17 @@ namespace WP_AutoOps_Agent\Actions;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Updates WordPress plugins with available updates via Plugin_Upgrader.
+ * Updates enabled WordPress plugins with available updates via Plugin_Upgrader.
  *
  * Continues processing remaining plugins when a single update fails.
+ * Reactivates plugins that core deactivates before non-cron upgrades.
  *
  * @since 0.1.0
  */
 class Update_Plugins_Action implements Action_Interface {
 
 	/**
-	 * Updates all plugins that currently have an available update.
+	 * Updates all enabled plugins that currently have an available update.
 	 *
 	 * @since 0.1.0
 	 *
@@ -41,7 +42,17 @@ class Update_Plugins_Action implements Action_Interface {
 		$update_response   = is_object( $update_data ) && isset( $update_data->response )
 			? (array) $update_data->response
 			: array();
-		$requested         = array_keys( $update_response );
+		$active_plugins    = (array) get_option( 'active_plugins', array() );
+		$network_plugins   = is_multisite()
+			? array_keys( (array) get_site_option( 'active_sitewide_plugins', array() ) )
+			: array();
+		$enabled_plugins   = array_unique( array_merge( $active_plugins, $network_plugins ) );
+		$requested         = array_values(
+			array_intersect(
+				array_keys( $update_response ),
+				$enabled_plugins
+			)
+		);
 
 		$results = array();
 		$updated = 0;
@@ -127,6 +138,15 @@ class Update_Plugins_Action implements Action_Interface {
 			);
 		}
 
+		/*
+		 * Plugin_Upgrader::upgrade() silently deactivates active plugins when not
+		 * running via cron (see deactivate_plugin_before_upgrade). Capture prior
+		 * activation state so we can restore it after the upgrade completes —
+		 * wp-admin JS does this for the Plugins screen; remote API callers do not.
+		 */
+		$was_active         = is_plugin_active( $basename );
+		$was_network_active = is_multisite() && is_plugin_active_for_network( $basename );
+
 		$skin     = new \WP_Ajax_Upgrader_Skin();
 		$upgrader = new \Plugin_Upgrader( $skin );
 
@@ -146,32 +166,87 @@ class Update_Plugins_Action implements Action_Interface {
 			? (string) $fresh_plugins[ $basename ]['Version']
 			: $previous_version;
 
-		if ( true === $result ) {
-			return array(
-				'basename'         => $basename,
-				'success'          => true,
-				'skipped'          => false,
-				'previous_version' => $previous_version,
-				'current_version'  => $current_version,
-				'message'          => __( 'Plugin updated successfully.', 'wp-autoops-agent' ),
-			);
-		}
+		$success = ( true === $result );
 
-		$error_message = __( 'Plugin update failed.', 'wp-autoops-agent' );
-
-		if ( is_wp_error( $result ) ) {
-			$error_message = $result->get_error_message();
+		if ( $success ) {
+			$message = __( 'Plugin updated successfully.', 'wp-autoops-agent' );
+		} elseif ( is_wp_error( $result ) ) {
+			$message = $result->get_error_message();
 		} elseif ( $skin->get_errors()->has_errors() ) {
-			$error_message = $skin->get_error_messages();
+			$message = $skin->get_error_messages();
+		} else {
+			$message = __( 'Plugin update failed.', 'wp-autoops-agent' );
 		}
 
-		return array(
+		$response = array(
 			'basename'         => $basename,
-			'success'          => false,
+			'success'          => $success,
 			'skipped'          => false,
 			'previous_version' => $previous_version,
 			'current_version'  => $current_version,
-			'message'          => $error_message,
+			'message'          => $message,
+		);
+
+		/*
+		 * Always attempt reactivation after a prior-active plugin was swapped —
+		 * core deactivates before the upgrade even when the install later fails.
+		 */
+		if ( $was_active || $was_network_active ) {
+			$reactivation = $this->reactivate_plugin( $basename, $was_network_active );
+
+			$response['reactivated'] = $reactivation['success'];
+
+			if ( ! $reactivation['success'] && null !== $reactivation['message'] ) {
+				$response['reactivation_message'] = $reactivation['message'];
+			}
+		}
+
+		return $response;
+	}
+
+	/**
+	 * Reactivates a plugin that WordPress deactivated before the upgrade.
+	 *
+	 * @since 0.1.0
+	 *
+	 * @param string $basename           Plugin basename.
+	 * @param bool   $was_network_active Whether the plugin was network-activated.
+	 * @return array{success: bool, message: string|null}
+	 */
+	private function reactivate_plugin( string $basename, bool $was_network_active ): array {
+		if ( ! file_exists( WP_PLUGIN_DIR . '/' . $basename ) ) {
+			return array(
+				'success' => false,
+				'message' => __( 'Plugin file is missing after update; could not reactivate.', 'wp-autoops-agent' ),
+			);
+		}
+
+		if ( $was_network_active ) {
+			if ( is_plugin_active_for_network( $basename ) ) {
+				return array(
+					'success' => true,
+					'message' => null,
+				);
+			}
+		} elseif ( is_plugin_active( $basename ) ) {
+			return array(
+				'success' => true,
+				'message' => null,
+			);
+		}
+
+		$activated = activate_plugin( $basename, '', $was_network_active, true );
+
+		if ( is_wp_error( $activated ) ) {
+			return array(
+				'success' => false,
+				'message' => $activated->get_error_message(),
+			);
+		}
+
+		return array(
+			'success' => true,
+			'message' => null,
 		);
 	}
 }
