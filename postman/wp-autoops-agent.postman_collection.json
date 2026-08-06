@@ -159,7 +159,7 @@
 								"actions"
 							]
 						},
-						"description": "Action type: update_plugins\n\nUpdates every installed plugin that currently has an available update via Plugin_Upgrader.\nContinues on individual failures and returns per-plugin results."
+						"description": "Action type: update_plugins\n\nUpdates every enabled plugin that currently has an available update via Plugin_Upgrader.\nContinues on individual failures and returns per-plugin results.\nPreviously active plugins are reactivated after each upgrade (core deactivates them outside cron)."
 					},
 					"response": []
 				},
