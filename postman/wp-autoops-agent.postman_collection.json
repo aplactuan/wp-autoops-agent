@@ -145,7 +145,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"actions\": [\n    {\n      \"type\": \"update_plugins\",\n      \"plugins\": [\n        {\n          \"basename\": \"elementor/elementor.php\"\n        },\n        {\n          \"basename\": \"woocommerce/woocommerce.php\"\n        }\n      ]\n    }\n  ]\n}"
+							"raw": "{\n  \"actions\": [\n    {\n      \"type\": \"update_plugins\"\n    }\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/wp-json/wp-autoops/v1/actions",
@@ -159,7 +159,7 @@
 								"actions"
 							]
 						},
-						"description": "Action type: update_plugins\n\nUpdates each listed plugin individually via Plugin_Upgrader.\nContinues on individual failures and returns per-plugin results."
+						"description": "Action type: update_plugins\n\nUpdates every installed plugin that currently has an available update via Plugin_Upgrader.\nContinues on individual failures and returns per-plugin results."
 					},
 					"response": []
 				},
@@ -315,7 +315,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"actions\": [\n    {\n      \"type\": \"ping\"\n    },\n    {\n      \"type\": \"backup\",\n      \"label\": \"Batch run backup\"\n    },\n    {\n      \"type\": \"update_plugins\",\n      \"plugins\": [\n        {\n          \"basename\": \"akismet/akismet.php\"\n        }\n      ]\n    }\n  ]\n}"
+							"raw": "{\n  \"actions\": [\n    {\n      \"type\": \"ping\"\n    },\n    {\n      \"type\": \"backup\",\n      \"label\": \"Batch run backup\"\n    },\n    {\n      \"type\": \"update_plugins\"\n    }\n  ]\n}"
 						},
 						"url": {
 							"raw": "{{baseUrl}}/wp-json/wp-autoops/v1/actions",

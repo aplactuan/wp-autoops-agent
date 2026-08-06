@@ -10,7 +10,7 @@ namespace WP_AutoOps_Agent\Actions;
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Updates WordPress plugins individually via Plugin_Upgrader.
+ * Updates WordPress plugins with available updates via Plugin_Upgrader.
  *
  * Continues processing remaining plugins when a single update fails.
  *
@@ -19,11 +19,11 @@ defined( 'ABSPATH' ) || exit;
 class Update_Plugins_Action implements Action_Interface {
 
 	/**
-	 * Updates the requested plugins one at a time.
+	 * Updates all plugins that currently have an available update.
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param array<string, mixed> $options Action options. Expects a `plugins` list.
+	 * @param array<string, mixed> $options Action options.
 	 * @return array{
 	 *     result: array{
 	 *         updated: int,
@@ -36,23 +36,20 @@ class Update_Plugins_Action implements Action_Interface {
 	public function execute( array $options = array() ): array {
 		$this->load_dependencies();
 
-		$requested = isset( $options['plugins'] ) && is_array( $options['plugins'] )
-			? $options['plugins']
-			: array();
-
 		$installed_plugins = get_plugins();
 		$update_data       = get_site_transient( 'update_plugins' );
 		$update_response   = is_object( $update_data ) && isset( $update_data->response )
 			? (array) $update_data->response
 			: array();
+		$requested         = array_keys( $update_response );
 
 		$results = array();
 		$updated = 0;
 		$failed  = 0;
 		$skipped = 0;
 
-		foreach ( $requested as $plugin ) {
-			$result = $this->update_plugin( $plugin, $installed_plugins, $update_response );
+		foreach ( $requested as $basename ) {
+			$result = $this->update_plugin( $basename, $installed_plugins, $update_response );
 
 			$results[] = $result;
 
@@ -102,23 +99,12 @@ class Update_Plugins_Action implements Action_Interface {
 	 *
 	 * @since 0.1.0
 	 *
-	 * @param mixed                     $plugin            Requested plugin payload.
+	 * @param string                    $basename          Plugin basename.
 	 * @param array<string, array>      $installed_plugins Installed plugin headers.
 	 * @param array<string, object|array> $update_response Available update packages.
 	 * @return array<string, mixed>
 	 */
-	private function update_plugin( mixed $plugin, array $installed_plugins, array $update_response ): array {
-		if ( ! is_array( $plugin ) || empty( $plugin['basename'] ) || ! is_string( $plugin['basename'] ) ) {
-			return array(
-				'basename' => null,
-				'success'  => false,
-				'skipped'  => true,
-				'message'  => __( 'Invalid plugin definition.', 'wp-autoops-agent' ),
-			);
-		}
-
-		$basename = $plugin['basename'];
-
+	private function update_plugin( string $basename, array $installed_plugins, array $update_response ): array {
 		if ( ! isset( $installed_plugins[ $basename ] ) ) {
 			return array(
 				'basename' => $basename,
