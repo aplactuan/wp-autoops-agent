@@ -159,7 +159,7 @@
 								"actions"
 							]
 						},
-						"description": "Action type: update_plugins\n\nUpdates every enabled plugin that currently has an available update via Plugin_Upgrader.\nContinues on individual failures and returns per-plugin results.\nPreviously active plugins are reactivated after each upgrade (core deactivates them outside cron)."
+						"description": "Action type: update_plugins\n\nUpdates every enabled plugin that currently has an available update via Plugin_Upgrader.\nUses the same path as WordPress background updates (no deactivation) so remote jobs do not leave plugins inactive.\nContinues on individual failures and returns per-plugin results."
 					},
 					"response": []
 				},
