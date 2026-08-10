@@ -27,7 +27,7 @@ class Response {
 	 * @return \WP_REST_Response
 	 */
 	public static function success(
-		mixed $data = null,
+		$data = null,
 		array $meta = array(),
 		int $status = 200
 	): \WP_REST_Response {

@@ -3,7 +3,7 @@ Contributors: aplactuan
 Tags: monitoring, maintenance, remote management, autoops
 Requires at least: 6.5
 Tested up to: 6.8
-Requires PHP: 8.1
+Requires PHP: 7.4
 Stable tag: 0.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -20,7 +20,7 @@ This release contains the plugin bootstrap only: environment checks, core classe
 
 1. Upload the `wp-autoops-agent` folder to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the **Plugins** screen in WordPress.
-3. Confirm your site runs PHP 8.1+ and WordPress 6.5+.
+3. Confirm your site runs PHP 7.4+ and WordPress 6.5+.
 
 == Frequently Asked Questions ==
 
@@ -30,13 +30,13 @@ It provides authenticated ping and site status endpoints for WP AutoOps. No sett
 
 = What are the minimum requirements? =
 
-PHP 8.1 or higher and WordPress 6.5 or higher.
+PHP 7.4 or higher and WordPress 6.5 or higher.
 
 == Changelog ==
 
 = 0.1.0 =
 * Initial plugin bootstrap.
-* Activation checks for PHP 8.1+ and WordPress 6.5+.
+* Activation checks for PHP 7.4+ and WordPress 6.5+.
 * Core loader, plugin, API, auth, response, status, and job service scaffolds.
 * Authenticated ping and provider-based status endpoints.
 

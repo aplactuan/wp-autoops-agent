@@ -35,7 +35,7 @@ class Auth {
 	 * @param \WP_REST_Request $request Current REST request.
 	 * @return true|\WP_Error True when authorized; otherwise, an error.
 	 */
-	public function permissions_check( \WP_REST_Request $request ): bool|\WP_Error {
+	public function permissions_check( \WP_REST_Request $request ) {
 		unset( $request );
 
 		if ( $this->is_authorized() ) {

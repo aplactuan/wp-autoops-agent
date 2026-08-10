@@ -50,7 +50,7 @@ class Loader {
 	 */
 	public function add_action(
 		string $hook,
-		object|string $component,
+		$component,
 		string $callback,
 		int $priority = 10,
 		int $accepted_args = 1
@@ -72,7 +72,7 @@ class Loader {
 	 */
 	public function add_filter(
 		string $hook,
-		object|string $component,
+		$component,
 		string $callback,
 		int $priority = 10,
 		int $accepted_args = 1
@@ -96,7 +96,7 @@ class Loader {
 	protected function add(
 		array $hooks,
 		string $hook,
-		object|string $component,
+		$component,
 		string $callback,
 		int $priority,
 		int $accepted_args
