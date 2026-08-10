@@ -5,7 +5,7 @@
  * Description:       Remote monitoring and maintenance agent for WP AutoOps.
  * Version:           0.1.0
  * Requires at least: 6.5
- * Requires PHP:      8.1
+ * Requires PHP:      7.4
  * Author:            Adrian Lactuan
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
@@ -35,7 +35,7 @@ define( 'WP_AUTOOPS_AGENT_URL', plugin_dir_url( __FILE__ ) );
 /**
  * Minimum required PHP version.
  */
-define( 'WP_AUTOOPS_AGENT_MIN_PHP', '8.1' );
+define( 'WP_AUTOOPS_AGENT_MIN_PHP', '7.4' );
 
 /**
  * Minimum required WordPress version.
